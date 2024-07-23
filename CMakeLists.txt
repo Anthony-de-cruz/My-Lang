@@ -8,16 +8,29 @@ project(Cpp-Heap
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
 set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -O0 -ggdb")
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
-add_executable(My-Lang
-    example/hello_world.cpp
+set(SRC_FILES
     src/lexer.cpp
 )
 
+set(HEADER_FILES
+    include/lexer.h
+)
+
+add_executable(My-Lang
+    example/hello_world.cpp
+    ${SRC_FILES}
+)
+
 target_include_directories(
-    My-Lang PRIVATE ${PROJECT_SOURCE_DIR}/src,
     My-Lang PRIVATE ${PROJECT_SOURCE_DIR}/include
 )
 
+target_compile_options(My-Lang PRIVATE
+    -Wall
+    -Wextra
+    -Wpedantic
+)

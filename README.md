@@ -1,2 +1,3 @@
 # My-Lang
-The objectively (not object oriented) perfect programming language.
+
+The objectively perfect (not object-oriented) programming language.

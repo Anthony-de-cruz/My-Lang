@@ -1,5 +1,5 @@
 #ifndef LEXER_H
-#define HEAP_H
+#define LEXER_H
 
 void hello_world();
 
