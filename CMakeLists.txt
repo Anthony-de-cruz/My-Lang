@@ -27,19 +27,11 @@ FetchContent_MakeAvailable(googletest)
 
 include(CTest)
 
-# add_subdirectory(external)
-# add_subdirectory(tests)
-
-set(SRC_FILES
-    src/lexer.cpp
-)
-set(HEADER_FILES
-    include/lexer.h
-)
+add_subdirectory(tests)
 
 add_executable(My-Lang
     example/hello_world.cpp
-    ${SRC_FILES}
+    src/lexer.cpp
 )
 
 target_include_directories(

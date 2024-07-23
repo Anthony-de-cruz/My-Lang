@@ -1,3 +1,3 @@
 #include "lexer.h"
 
-int main(int argc, char **argv) { hello_world(); }
+int main() { lexer::hello_world(); }
