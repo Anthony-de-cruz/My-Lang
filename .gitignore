@@ -1,3 +1,13 @@
+### Build ###
+build/
+core.*
+
+### Editors ###
+.obsidian/
+.cache/
+
+### github/gitignore/C++ ###
+
 # Prerequisites
 *.d
 
@@ -30,3 +40,4 @@
 *.exe
 *.out
 *.app
+
