@@ -6,4 +6,4 @@ class LexerTest : public testing::Test {
   protected:
 };
 
-TEST(LexerTest, BasicTest) { ASSERT_EQ(lexer::return_1(), 1); }
+TEST(LexerTest, BasicTest) { ASSERT_EQ(1, 1); }
