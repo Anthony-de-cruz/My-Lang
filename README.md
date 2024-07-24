@@ -28,6 +28,6 @@ GTEST_COLOR=1 ctest --test-dir build --output-on-failure -j12
 
 ### Todo
 
-- [ ] Build + test lexer
+- [x] Build + test lexer
 - [ ] Build + test parser
 - [ ] Build + test abstract syntax tree
