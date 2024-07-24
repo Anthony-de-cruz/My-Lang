@@ -1,12 +1,13 @@
 #include <cctype>
 #include <cstdio>
+#include <iostream>
 #include <istream>
 
 #include "lexer.h"
 
 enum Lexer::Token Lexer::get_token(std::istream *input_stream) {
 
-    int last_char = ' ';
+    static int last_char = ' ';
 
     while (isspace(last_char))
         last_char = input_stream->get();
@@ -15,7 +16,7 @@ enum Lexer::Token Lexer::get_token(std::istream *input_stream) {
     if (isalpha(last_char)) {
         // Consume whole word
         identifier = last_char;
-        while (isalnum(last_char = input_stream->get()))
+        while (isalnum(last_char = input_stream->get()) || last_char == '_')
             identifier += last_char;
 
         if (identifier == "def")
