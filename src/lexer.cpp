@@ -1,7 +1,6 @@
 #include <cctype>
 #include <cstdio>
 #include <istream>
-#include <sstream>
 
 #include "lexer.h"
 
@@ -16,7 +15,7 @@ enum Lexer::Token Lexer::get_token(std::istream *input_stream) {
     if (isalpha(last_char)) {
         // Consume whole word
         identifier = last_char;
-        while (isalnum(last_char = getchar()))
+        while (isalnum(last_char = input_stream->get()))
             identifier += last_char;
 
         if (identifier == "def")
@@ -32,7 +31,7 @@ enum Lexer::Token Lexer::get_token(std::istream *input_stream) {
         std::string num_string;
         do {
             num_string += last_char;
-            last_char = getchar();
+            last_char = input_stream->get();
         } while (isdigit(last_char) || last_char == '.');
 
         numeric = strtod(num_string.c_str(), nullptr);
@@ -42,7 +41,7 @@ enum Lexer::Token Lexer::get_token(std::istream *input_stream) {
     // Comments until \n
     if (last_char == '#') {
         do
-            last_char = getchar();
+            last_char = input_stream->get();
         while (last_char != EOF && last_char != '\n' && last_char != '\r');
 
         if (last_char != EOF)
@@ -54,6 +53,6 @@ enum Lexer::Token Lexer::get_token(std::istream *input_stream) {
 
     // Return unknown chars
     int current_char = last_char;
-    last_char = getchar();
+    last_char = input_stream->get();
     return Lexer::Token(current_char);
 }
