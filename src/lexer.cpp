@@ -1,14 +1,16 @@
 #include <cctype>
 #include <cstdio>
+#include <istream>
+#include <sstream>
 
 #include "lexer.h"
 
-enum Lexer::Token Lexer::get_token() {
+enum Lexer::Token Lexer::get_token(std::istream *input_stream) {
 
     int last_char = ' ';
 
     while (isspace(last_char))
-        last_char = getchar();
+        last_char = input_stream->get();
 
     // Identifier: [a-zA-Z][a-zA-Z0-9]*
     if (isalpha(last_char)) {
@@ -44,7 +46,7 @@ enum Lexer::Token Lexer::get_token() {
         while (last_char != EOF && last_char != '\n' && last_char != '\r');
 
         if (last_char != EOF)
-            return get_token();
+            return get_token(input_stream);
     }
 
     if (last_char == EOF)

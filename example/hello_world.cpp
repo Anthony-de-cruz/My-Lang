@@ -10,11 +10,12 @@ int main() {
 
     while (running) {
         std::cout << " > ";
-        auto token = lexer->get_token();
+        auto token = lexer->get_token(&std::cin);
 
         switch (token) {
         case Lexer::tok_eof:
             running = false;
+            std::cout << '\n';
             break;
 
         case Lexer::tok_def:

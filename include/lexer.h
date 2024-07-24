@@ -1,6 +1,7 @@
 #ifndef LEXER_H
 #define LEXER_H
 
+#include <istream>
 #include <string>
 
 class Lexer {
@@ -23,7 +24,7 @@ class Lexer {
      * Returns a token code [0-255] if captured standard input is unknown,
      * otherwise returns one of the known codes from Token.
      */
-    enum Token get_token();
+    enum Token get_token(std::istream *input_stream);
 
     /**
      * The string of the last identifier token captured.
