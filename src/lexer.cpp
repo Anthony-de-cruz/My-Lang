@@ -1,6 +1,7 @@
-#include "lexer.h"
 #include <cctype>
 #include <cstdio>
+
+#include "lexer.h"
 
 enum Lexer::Token Lexer::get_token() {
 
