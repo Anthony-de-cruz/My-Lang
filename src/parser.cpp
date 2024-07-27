@@ -1,3 +1,4 @@
+#include <iostream>
 #include <memory>
 #include <stdexcept>
 #include <string>
@@ -6,6 +7,13 @@
 
 #include "ast.h"
 #include "parser.h"
+
+static std::map<char, int> BinaryOpPrecidence{
+    {'<', 10}, {'+', 20}, {'-', 20}, {'*', 40}};
+
+int Parser::get_next_token() {
+    return current_token = lexer->get_token(&std::cin);
+}
 
 std::unique_ptr<AST::Number> Parser::parse_number() {
     auto result = std::make_unique<AST::Number>(lexer->get_numeric());

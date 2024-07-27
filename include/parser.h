@@ -1,6 +1,7 @@
 #ifndef PARSER_H
 #define PARSER_H
 
+#include <map>
 #include <memory>
 
 #include "ast.h"
@@ -12,6 +13,8 @@ class Parser {
     int current_token;
 
   public:
+    static std::map<char, int> BinaryOpPrecidence;
+
     Parser(Lexer *lexer) : lexer(lexer) {};
 
     int get_next_token();
