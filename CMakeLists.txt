@@ -30,7 +30,7 @@ include(CTest)
 add_subdirectory(tests)
 
 add_executable(My-Lang
-    example/hello_world.cpp
+    example/interactive_lexer.cpp
     src/lexer.cpp
 )
 
