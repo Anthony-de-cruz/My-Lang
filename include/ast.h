@@ -1,3 +1,6 @@
+#ifndef AST_H
+#define AST_H
+
 #include <memory>
 #include <string>
 #include <vector>
@@ -88,3 +91,5 @@ class Function {
         : prototype(std::move(prototype)), body(std::move(body)) {}
 };
 } // namespace AST
+
+#endif // !AST_H
