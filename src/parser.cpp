@@ -1,4 +1,4 @@
-#include <iostream>
+#include <cassert>
 #include <memory>
 #include <stdexcept>
 #include <string>
@@ -6,13 +6,14 @@
 #include <vector>
 
 #include "ast.h"
+#include "lexer.h"
 #include "parser.h"
 
-static std::map<char, int> BinopPrecidence{
+std::map<char, int> Parser::binop_precidence{
     {'<', 10}, {'+', 20}, {'-', 20}, {'*', 40}};
 
 int Parser::get_next_token() {
-    return current_token = lexer->get_token(&std::cin);
+    return current_token = lexer->get_token(lexer_stream);
 }
 
 std::unique_ptr<AST::Number> Parser::parse_number() {
@@ -108,7 +109,7 @@ Parser::parse_binop_right(int expr_precidence,
         // Parse the next expression
         auto right = parse_primary();
         int next_token_precidence =
-            Parser::get_binop_precidence((char)current_token);
+            Parser::get_binop_precidence(char(current_token));
         if (token_precidence < next_token_precidence) {
             right = parse_binop_right(token_precidence, std::move(right));
         }
@@ -120,8 +121,61 @@ Parser::parse_binop_right(int expr_precidence,
 }
 
 int Parser::get_binop_precidence(char binop) {
+    if (binop == ';') // TEMPORARY
+        return -1;
     if (binop_precidence.count(binop) == 0)
         throw std::runtime_error("Syntax Error: Invalid binary operator: " +
                                  std::to_string(binop));
     return binop_precidence[binop];
+}
+
+std::unique_ptr<AST::Prototype> Parser::parse_prototype() {
+    // Expect a function name for a prototype
+    assert(current_token != Lexer::tok_identifier);
+
+    std::string name = lexer->get_identifier();
+    get_next_token(); // Consume function name
+
+    if (current_token != '(')
+        throw std::runtime_error(
+            "Syntax Error: Expected '(' in prototype. Got " +
+            std::to_string(current_token) + " instead");
+
+    std::vector<std::string> args;
+
+    while (get_next_token() == Lexer::tok_identifier)
+        args.push_back(lexer->get_identifier());
+    if (current_token != ')')
+        throw std::runtime_error(
+            "Syntax Error: Expected ')' in prototype. Got " +
+            std::to_string(current_token) + " instead");
+
+    get_next_token(); // Consume )
+
+    return std::make_unique<AST::Prototype>(name, std::move(args));
+}
+
+std::unique_ptr<AST::Function> Parser::parse_function() {
+    get_next_token(); // Consume def
+
+    auto prototype = parse_prototype();
+    auto expressions = parse_expression();
+
+    return std::make_unique<AST::Function>(std::move(prototype),
+                                           std::move(expressions));
+}
+
+std::unique_ptr<AST::Prototype> Parser::parse_extern() {
+    get_next_token(); // Consume extern
+    return parse_prototype();
+}
+
+std::unique_ptr<AST::Function> Parser::parse_top_level_expression() {
+
+    auto expression = parse_expression();
+    // Make anonymous prototype
+    auto prototype =
+        std::make_unique<AST::Prototype>("", std::vector<std::string>());
+    return std::make_unique<AST::Function>(std::move(prototype),
+                                           std::move(expression));
 }

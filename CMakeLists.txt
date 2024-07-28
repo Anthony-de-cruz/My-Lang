@@ -30,8 +30,9 @@ include(CTest)
 add_subdirectory(tests)
 
 add_executable(My-Lang
-    example/interactive_lexer.cpp
+    example/interactive_parser.cpp
     src/lexer.cpp
+    src/parser.cpp
 )
 
 target_include_directories(
