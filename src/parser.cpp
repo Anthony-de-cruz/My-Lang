@@ -131,7 +131,7 @@ int Parser::get_binop_precidence(char binop) {
 
 std::unique_ptr<AST::Prototype> Parser::parse_prototype() {
     // Expect a function name for a prototype
-    assert(current_token != Lexer::tok_identifier);
+    assert(current_token == Lexer::tok_identifier);
 
     std::string name = lexer->get_identifier();
     get_next_token(); // Consume function name
