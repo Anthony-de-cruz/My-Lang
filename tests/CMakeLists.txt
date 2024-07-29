@@ -1,7 +1,7 @@
 if (BUILD_TESTING)
     add_executable(tests
         main.cpp
-        unit/lexer_tokens.cpp
+        unit/lexer.cpp
     )
     target_link_libraries(tests PRIVATE GTest::gtest_main)
     target_sources(tests PRIVATE ${PROJECT_SOURCE_DIR}/src/lexer.cpp)
