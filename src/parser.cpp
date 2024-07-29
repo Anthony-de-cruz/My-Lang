@@ -69,6 +69,7 @@ std::unique_ptr<AST::Expression> Parser::parse_identifier() {
 }
 
 std::unique_ptr<AST::Expression> Parser::parse_primary() {
+
     switch (current_token) {
     case Lexer::tok_identifier:
         return parse_identifier();
@@ -77,8 +78,9 @@ std::unique_ptr<AST::Expression> Parser::parse_primary() {
     case '(':
         return parse_parentheses();
     default:
-        throw std::runtime_error("Syntax Error: Unknown token " +
-                                 std::to_string(current_token));
+        throw std::runtime_error(
+            "Syntax Error: Expected primary token, got " +
+            std::string(1, static_cast<char>(current_token)));
     }
 }
 
@@ -95,7 +97,7 @@ Parser::parse_binop_right(int expr_precidence,
     // they are all merged as a binary expression
     while (true) {
         int token_precidence =
-            Parser::get_binop_precidence((char)current_token);
+            Parser::get_binop_precidence(static_cast<char>(current_token));
 
         // If this is a binop that binds at least as tightly as
         // the current binop, consume it, otherwise we are done
@@ -109,7 +111,7 @@ Parser::parse_binop_right(int expr_precidence,
         // Parse the next expression
         auto right = parse_primary();
         int next_token_precidence =
-            Parser::get_binop_precidence(char(current_token));
+            Parser::get_binop_precidence(static_cast<char>(current_token));
         if (token_precidence < next_token_precidence) {
             right = parse_binop_right(token_precidence, std::move(right));
         }
@@ -125,15 +127,16 @@ int Parser::get_binop_precidence(char binop) {
         return -1;
     if (binop_precidence.count(binop) == 0)
         throw std::runtime_error("Syntax Error: Invalid binary operator: " +
-                                 std::to_string(binop));
+                                 std::string(1, binop));
     return binop_precidence[binop];
 }
 
 std::unique_ptr<AST::Prototype> Parser::parse_prototype() {
     // Expect a function name for a prototype
     if (current_token != Lexer::tok_identifier)
-        throw std::runtime_error("Syntax Error: Expected function name. Got " +
-                                 std::to_string(current_token) + " instead");
+        throw std::runtime_error(
+            "Syntax Error: Expected function name. Got " +
+            std::string(1, static_cast<char>(current_token)) + " instead");
 
     std::string name = lexer->get_identifier();
     get_next_token(); // Consume function name
@@ -141,7 +144,7 @@ std::unique_ptr<AST::Prototype> Parser::parse_prototype() {
     if (current_token != '(')
         throw std::runtime_error(
             "Syntax Error: Expected '(' in prototype. Got " +
-            std::to_string(current_token) + " instead");
+            std::string(1, static_cast<char>(current_token)) + " instead");
 
     std::vector<std::string> args;
 
@@ -150,7 +153,7 @@ std::unique_ptr<AST::Prototype> Parser::parse_prototype() {
     if (current_token != ')')
         throw std::runtime_error(
             "Syntax Error: Expected ')' in prototype. Got " +
-            std::to_string(current_token) + " instead");
+            std::string(1, static_cast<char>(current_token)) + " instead");
 
     get_next_token(); // Consume )
 
