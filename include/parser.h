@@ -150,6 +150,7 @@ class Parser {
                 }
             } catch (std::runtime_error &e) {
                 std::cout << e.what() << '\n';
+                get_next_token(); // Consume problematic token
             }
         }
     }
