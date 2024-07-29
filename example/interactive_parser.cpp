@@ -1,5 +1,6 @@
 #include <cstdlib>
 #include <iostream>
+#include <stdexcept>
 
 #include "lexer.h"
 #include "parser.h"
@@ -13,8 +14,15 @@ int main() {
     fprintf(stderr, "ready> ");
     parser->get_next_token();
 
-    // Run the main "interpreter loop" now.
-    parser->main_loop();
+    while (true) {
+        try {
+            fprintf(stderr, "ready> ");
+            parser->handle_expression();
+        } catch (std::runtime_error &exception) {
+            std::cerr << exception.what() << '\n';
+            parser->get_next_token();
+        }
+    }
 
     return EXIT_SUCCESS;
 }

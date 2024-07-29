@@ -20,6 +20,11 @@ class Parser {
     Parser(Lexer *lexer, std::istream *lexer_stream)
         : lexer(lexer), lexer_stream(lexer_stream) {};
 
+    /**
+     * Get the next token from the lexer
+     *
+     * Sets current_token
+     */
     int get_next_token();
 
     /**
@@ -98,60 +103,25 @@ class Parser {
      */
     std::unique_ptr<AST::Function> parse_top_level_expression();
 
-    inline void handle_function() {
-        if (parse_function()) {
+    inline void handle_expression() {
+        switch (current_token) {
+        case Lexer::tok_eof:
+            return;
+        case ';': // ignore top-level semicolons.
+            get_next_token();
+            break;
+        case Lexer::tok_def:
+            parse_function();
             fprintf(stderr, "Parsed a function definition.\n");
-        } else {
-            // Skip token for error recovery.
-            get_next_token();
-        }
-    }
-
-    inline void handle_extern() {
-        if (parse_extern()) {
+            break;
+        case Lexer::tok_extern:
+            parse_extern();
             fprintf(stderr, "Parsed an extern\n");
-        } else {
-            // Skip token for error recovery.
-            get_next_token();
-        }
-    }
-
-    inline void handle_top_level_expression() {
-        // Evaluate a top-level expression into an anonymous function.
-        if (parse_top_level_expression()) {
+            break;
+        default:
+            parse_top_level_expression();
             fprintf(stderr, "Parsed a top-level expr\n");
-        } else {
-            // Skip token for error recovery.
-            get_next_token();
-        }
-    }
-
-    /// top ::= definition | external | expression | ';'
-    inline void main_loop() {
-        while (true) {
-            try {
-
-                fprintf(stderr, "ready> ");
-                switch (current_token) {
-                case Lexer::tok_eof:
-                    return;
-                case ';': // ignore top-level semicolons.
-                    get_next_token();
-                    break;
-                case Lexer::tok_def:
-                    handle_function();
-                    break;
-                case Lexer::tok_extern:
-                    handle_extern();
-                    break;
-                default:
-                    handle_top_level_expression();
-                    break;
-                }
-            } catch (std::runtime_error &e) {
-                std::cout << e.what() << '\n';
-                get_next_token(); // Consume problematic token
-            }
+            break;
         }
     }
 };
