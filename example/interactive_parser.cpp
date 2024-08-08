@@ -1,6 +1,7 @@
 #include <cstdlib>
 #include <iostream>
 #include <stdexcept>
+#include <unistd.h>
 
 #include "lexer.h"
 #include "parser.h"
@@ -8,19 +9,21 @@
 int main() {
 
     Lexer *lexer = new Lexer;
-    Parser *parser = new Parser(lexer, &std::cin);
+    std::istream *stream = &std::cin;
 
-    // Prime the first token.
-    fprintf(stderr, "ready> ");
-    parser->get_next_token();
+    std::cout << "> ";
+    Parser *parser = new Parser(lexer, stream);
 
     while (true) {
         try {
-            fprintf(stderr, "ready> ");
-            parser->handle_expression();
+            switch (parser->handle_expression()) {
+            case ';':
+                std::cout << "> ";
+                break;
+            }
         } catch (std::runtime_error &exception) {
             std::cerr << exception.what() << '\n';
-            parser->get_next_token();
+            break;
         }
     }
 

@@ -1,4 +1,5 @@
 #include <cassert>
+#include <cctype>
 #include <memory>
 #include <stdexcept>
 #include <string>
@@ -78,14 +79,21 @@ std::unique_ptr<AST::Expression> Parser::parse_primary() {
     case '(':
         return parse_parentheses();
     default:
-        throw std::runtime_error(
-            "Syntax Error: Expected primary token, got " +
-            std::string(1, static_cast<char>(current_token)));
+        if (isascii(current_token) && current_token != 0)
+            throw std::runtime_error(
+                "Syntax Error: Expected primary token, got " +
+                std::string(1, static_cast<char>(current_token)));
+        else
+            throw std::runtime_error(
+                "Syntax Error: Expected primary token, got " +
+                std::to_string(current_token));
     }
 }
 
 std::unique_ptr<AST::Expression> Parser::parse_expression() {
+    std::cout << "parsing primary\n";
     auto left = parse_primary();
+    std::cout << "parsing right binop\n";
     return parse_binop_right(0, std::move(left));
 }
 
@@ -99,6 +107,8 @@ Parser::parse_binop_right(int expr_precidence,
         int token_precidence =
             Parser::get_binop_precidence(static_cast<char>(current_token));
 
+        std::cout << "checking if " << static_cast<char>(current_token)
+                  << " is a binop\n";
         // If this is a binop that binds at least as tightly as
         // the current binop, consume it, otherwise we are done
         if (token_precidence < expr_precidence)
@@ -123,11 +133,8 @@ Parser::parse_binop_right(int expr_precidence,
 }
 
 int Parser::get_binop_precidence(char binop) {
-    if (binop == ';') // TEMPORARY
-        return -1;
     if (binop_precidence.count(binop) == 0)
-        throw std::runtime_error("Syntax Error: Invalid binary operator: " +
-                                 std::string(1, binop));
+        return -1;
     return binop_precidence[binop];
 }
 
@@ -176,8 +183,10 @@ std::unique_ptr<AST::Prototype> Parser::parse_extern() {
 }
 
 std::unique_ptr<AST::Function> Parser::parse_top_level_expression() {
+    std::cout << "parsing expression: " << current_token << '\n';
 
     auto expression = parse_expression();
+    std::cout << "making anonymous func\n";
     // Make anonymous prototype
     auto prototype =
         std::make_unique<AST::Prototype>("", std::vector<std::string>());

@@ -18,7 +18,9 @@ class Parser {
 
   public:
     Parser(Lexer *lexer, std::istream *lexer_stream)
-        : lexer(lexer), lexer_stream(lexer_stream) {};
+        : lexer(lexer), lexer_stream(lexer_stream) {
+        get_next_token();
+    };
 
     /**
      * Get the next token from the lexer
@@ -103,10 +105,10 @@ class Parser {
      */
     std::unique_ptr<AST::Function> parse_top_level_expression();
 
-    inline void handle_expression() {
+    inline int handle_expression() {
         switch (current_token) {
         case Lexer::tok_eof:
-            return;
+            break;
         case ';': // ignore top-level semicolons.
             get_next_token();
             break;
@@ -123,6 +125,7 @@ class Parser {
             fprintf(stderr, "Parsed a top-level expr\n");
             break;
         }
+        return current_token;
     }
 };
 
