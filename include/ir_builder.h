@@ -38,6 +38,12 @@ static std::unique_ptr<llvm::Module> module;
  */
 static std::map<std::string, llvm::Value *> symbol_table;
 
+static inline void initialise_module() {
+    context = std::make_unique<llvm::LLVMContext>();
+    module = std::make_unique<llvm::Module>("My Lang JIT Compiler", *context);
+    builder = std::make_unique<llvm::IRBuilder<>>(*context);
+}
+
 } // namespace IRBuilder
 
 #endif // !IR_BUILDER_H
