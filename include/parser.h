@@ -18,9 +18,7 @@ class Parser {
 
   public:
     Parser(Lexer *lexer, std::istream *lexer_stream)
-        : lexer(lexer), lexer_stream(lexer_stream) {
-        get_next_token();
-    };
+        : lexer(lexer), lexer_stream(lexer_stream) {};
 
     /**
      * Get the next token from the lexer
@@ -106,6 +104,7 @@ class Parser {
     std::unique_ptr<AST::Function> parse_top_level_expression();
 
     inline int handle_expression() {
+        get_next_token();
         switch (current_token) {
         case Lexer::tok_eof:
             break;
