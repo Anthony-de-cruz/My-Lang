@@ -33,7 +33,8 @@ static std::unique_ptr<llvm::IRBuilder<>> builder;
 static std::unique_ptr<llvm::Module> module;
 
 /**
- * A map to keep track of used symbol names like function parameters.
+ * A map to keep track of used symbol names. Function parameters are currently
+ * the only symbol names that are kept track of.
  */
 static std::map<std::string, llvm::Value *> symbol_table;
 
