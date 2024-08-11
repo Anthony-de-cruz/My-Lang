@@ -1,6 +1,5 @@
 #include <cstdlib>
 #include <iostream>
-#include <sstream>
 #include <stdexcept>
 #include <unistd.h>
 
@@ -9,17 +8,13 @@
 
 int main() {
 
-    Lexer *lexer = new Lexer;
-
-    // auto stream = new std::stringstream;
-    // *stream << "x+y;";
-    std::istream *stream = &std::cin;
+    auto *lexer = new Lexer;
+    auto *stream = &std::cin;
+    auto *parser = new Parser(lexer, stream);
 
     std::cout << "> ";
-    Parser *parser = new Parser(lexer, stream);
 
     bool running = true;
-
     while (running) {
         try {
             switch (parser->handle_expression()) {
