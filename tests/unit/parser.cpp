@@ -22,10 +22,14 @@ class ParserTest : public testing::Test {
 };
 
 TEST_F(ParserTest, BasicExpression) {
-    *stream << "x+y;";
+    *stream << "def increment(x) x+1; increment(5);";
     try {
         EXPECT_EQ(parser->handle_expression(), 59);
-        EXPECT_EQ(lexer->get_identifier(), "y");
+        EXPECT_EQ(lexer->get_identifier(), "x");
+        EXPECT_EQ(lexer->get_numeric(), 1);
+        EXPECT_EQ(parser->handle_expression(), 59);
+        EXPECT_EQ(lexer->get_identifier(), "increment");
+        EXPECT_EQ(lexer->get_numeric(), 5);
     } catch (std::runtime_error &exception) {
         FAIL() << exception.what() << '\n';
     }
