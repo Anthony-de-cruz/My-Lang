@@ -1,5 +1,6 @@
-#include <cstdio>
 #include <gtest/gtest.h>
+
+#include <cstdio>
 #include <sstream>
 
 #include "lexer.h"
