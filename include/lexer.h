@@ -34,7 +34,7 @@ class Lexer {
     /**
      * The value of the last numeric token captured.
      */
-    inline double get_numeric() { return numeric; };
+    inline double get_numeric() const { return numeric; };
 };
 
 #endif // !LEXER_H

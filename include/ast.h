@@ -5,6 +5,8 @@
 #include <llvm/IR/Function.h>
 #include <llvm/IR/IRBuilder.h>
 #include <llvm/IR/Type.h>
+
+#include <iostream>
 #include <memory>
 #include <stdexcept>
 #include <string>
@@ -33,7 +35,8 @@ class Number : public Expression {
   public:
     Number(double value) : value(value) {}
 
-    inline llvm::Value *codegen() {
+    inline llvm::Value *codegen() override {
+        std::cout << "store numeric " << value << '\n';
         return llvm::ConstantFP::get(*IRBuilder::context, llvm::APFloat(value));
     };
 };
@@ -47,7 +50,7 @@ class Variable : public Expression {
   public:
     Variable(const std::string &name) : name(name) {}
 
-    inline llvm::Value *codegen() {
+    inline llvm::Value *codegen() override {
         // Look this variable up in the function.
         llvm::Value *value = IRBuilder::symbol_table[name];
         if (!value)
@@ -69,7 +72,7 @@ class Binary : public Expression {
         : operation(operation), left(std::move(left)), right(std::move(right)) {
     }
 
-    inline llvm::Value *codegen() {
+    inline llvm::Value *codegen() override {
         llvm::Value *left_gen = left->codegen();
         llvm::Value *right_gen = right->codegen();
 
@@ -109,7 +112,7 @@ class Call : public Expression {
          std::vector<std::unique_ptr<Expression>> args)
         : callee(callee), args(std::move(args)) {}
 
-    inline llvm::Value *codegen() {
+    inline llvm::Value *codegen() override {
         llvm::Function *callee_func = IRBuilder::module->getFunction(callee);
         if (!callee_func)
             throw std::runtime_error("Function: " + callee + " does not exist");
@@ -119,8 +122,9 @@ class Call : public Expression {
                 "Incorrect number of args in function call: " + callee);
 
         std::vector<llvm::Value *> argv;
-        for (int i = 0, argc = args.size(); i < argc; i++)
-            argv.push_back(args[i]->codegen());
+        argv.reserve(args.size());
+        for (const auto &arg : args)
+            argv.push_back(arg->codegen());
 
         return IRBuilder::builder->CreateCall(callee_func, argv, "calltmp");
     };
@@ -173,7 +177,7 @@ class Function {
         : prototype(std::move(prototype)), body(std::move(body)) {}
 
     inline llvm::Function *codegen() {
-        auto function = IRBuilder::module->getFunction(prototype->get_name());
+        auto *function = IRBuilder::module->getFunction(prototype->get_name());
 
         if (!function)
             function = prototype->codegen();
