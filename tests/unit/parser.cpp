@@ -35,7 +35,7 @@ TEST_F(ParserTest, BasicExpression) {
     }
 }
 
-TEST_F(ParserTest, BasicException) {
+TEST_F(ParserTest, MissingOperand) {
     *stream << "x+;";
     ASSERT_THROW(
         {
@@ -44,6 +44,20 @@ TEST_F(ParserTest, BasicException) {
             } catch (std::runtime_error &exception) {
                 EXPECT_STREQ("Syntax Error: Expected primary token, got ;",
                              exception.what());
+                throw;
+            }
+        },
+        std::runtime_error);
+}
+
+TEST_F(ParserTest, UndeclaredSymbol) {
+    *stream << "x+y;";
+    ASSERT_THROW(
+        {
+            try {
+                parser->handle_expression();
+            } catch (std::runtime_error &exception) {
+                EXPECT_STREQ("Use of undeclared symbol: x", exception.what());
                 throw;
             }
         },
