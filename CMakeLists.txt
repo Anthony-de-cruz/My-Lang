@@ -48,7 +48,7 @@ add_executable(My-Lang
     example/interactive_parser.cpp
     src/lexer.cpp
     src/parser.cpp
-    src/ir_builder.cpp
+    src/ir_generator.cpp
 )
 
 target_link_libraries(My-Lang ${llvm_libs})

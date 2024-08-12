@@ -13,7 +13,7 @@
 #include <map>
 #include <memory>
 
-namespace IRBuilder {
+namespace IRGenerator {
 
 /**
  * llvm::LLVMContext provides the core LLVM data structures, including the type
@@ -40,6 +40,6 @@ extern std::map<std::string, llvm::Value *> symbol_table;
 
 void initialise_module();
 
-} // namespace IRBuilder
+} // namespace IRGenerator
 
 #endif // !IR_BUILDER_H

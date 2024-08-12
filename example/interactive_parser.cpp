@@ -3,13 +3,13 @@
 #include <stdexcept>
 #include <unistd.h>
 
-#include "ir_builder.h"
+#include "ir_generator.h"
 #include "lexer.h"
 #include "parser.h"
 
 int main() {
 
-    IRBuilder::initialise_module();
+    IRGenerator::initialise_module();
 
     auto *lexer = new Lexer;
     auto *stream = &std::cin;
@@ -36,7 +36,7 @@ int main() {
     }
 
     // Print the generated code
-    IRBuilder::module->print(llvm::errs(), nullptr);
+    IRGenerator::module->print(llvm::errs(), nullptr);
 
     return EXIT_SUCCESS;
 }
