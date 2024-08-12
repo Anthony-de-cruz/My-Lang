@@ -1,5 +1,6 @@
 ### Build ###
 build/
+cmake-build-debug/
 
 ### Core files ###
 core.*
@@ -7,6 +8,7 @@ core.*
 ### Editors ###
 .obsidian/
 .cache/
+.idea/
 
 ### github/gitignore/C++ ###
 # Prerequisites
