@@ -18,4 +18,6 @@ GTEST_COLOR=1 ctest --test-dir build --output-on-failure -j12
 
 ### Dependencies
 
-[googletest v1.15.0](https://github.com/google/googletest/releases/tag/v1.15.0)
+[googletest v1.15.0](https://github.com/google/googletest/releases/tag/v1.15.0) - Should be managed by cmake
+
+[LLVM Core](https://llvm.org/) - Install via your package manager
