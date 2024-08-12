@@ -103,6 +103,30 @@ class Parser {
      */
     std::unique_ptr<AST::Function> parse_top_level_expression();
 
+    inline void handle_definition() {
+        auto expression = parse_function();
+        std::cout << "Parsed a function definition\n";
+        auto *IR = expression->codegen();
+        IR->print(llvm::errs());
+        std::cout << '\n';
+    }
+
+    inline void handle_extern() {
+        auto expression = parse_extern();
+        std::cout << "Parsed an extern\n";
+        auto *IR = expression->codegen();
+        IR->print(llvm::errs());
+        std::cout << '\n';
+    }
+
+    inline void handle_top_level_expression() {
+        auto expression = parse_top_level_expression();
+        std::cout << "Parsed a top-level expr\n";
+        auto *IR = expression->codegen();
+        IR->print(llvm::errs());
+        std::cout << '\n';
+    }
+
     inline int handle_expression() {
         get_next_token();
         switch (current_token) {
@@ -112,16 +136,13 @@ class Parser {
             get_next_token();
             break;
         case Lexer::tok_def:
-            parse_function();
-            fprintf(stderr, "Parsed a function definition.\n");
+            handle_definition();
             break;
         case Lexer::tok_extern:
-            parse_extern();
-            fprintf(stderr, "Parsed an extern\n");
+            handle_extern();
             break;
         default:
-            parse_top_level_expression();
-            fprintf(stderr, "Parsed a top-level expr\n");
+            handle_top_level_expression();
             break;
         }
         return current_token;

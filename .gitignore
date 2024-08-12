@@ -9,6 +9,7 @@ core.*
 .obsidian/
 .cache/
 .idea/
+.clang-tidy
 
 ### github/gitignore/C++ ###
 # Prerequisites

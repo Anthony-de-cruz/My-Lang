@@ -4,16 +4,10 @@ The objectively perfect (not object-oriented) programming language.
 
 ### Building
 
-Initialise cmake with:
-
-```sh
-cmake -B build
-```
-
 Build with:
 
 ```sh
-cmake --build build -j 12
+cmake -B build && cmake --build build -j 12
 ```
 
 Run tests with:
