@@ -37,6 +37,9 @@ class Number : public Expression {
 
     inline llvm::Value *codegen() override {
         std::cout << "store numeric " << value << '\n';
+
+        assert(IRBuilder::context);
+
         return llvm::ConstantFP::get(*IRBuilder::context, llvm::APFloat(value));
     };
 };
@@ -186,7 +189,7 @@ class Function {
             throw std::runtime_error("Function already defined");
 
         // Create basic block and start insertion
-        auto block =
+        auto *block =
             llvm::BasicBlock::Create(*IRBuilder::context, "entry", function);
         IRBuilder::builder->SetInsertPoint(block);
 

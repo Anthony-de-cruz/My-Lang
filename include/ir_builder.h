@@ -19,30 +19,26 @@ namespace IRBuilder {
  * llvm::LLVMContext provides the core LLVM data structures, including the type
  * and constant value tables.
  */
-static std::unique_ptr<llvm::LLVMContext> context;
+extern std::unique_ptr<llvm::LLVMContext> context;
 
 /**
  * llvm::IRBuilder provides a template to build instructions.
  */
-static std::unique_ptr<llvm::IRBuilder<>> builder;
+extern std::unique_ptr<llvm::IRBuilder<>> builder;
 
 /**
  * llvm::Module is a construct that contains the program's functions and global
  * variables, acting as the owner of all the generated IR.
  */
-static std::unique_ptr<llvm::Module> module;
+extern std::unique_ptr<llvm::Module> module;
 
 /**
  * A map to keep track of used symbol names. Function parameters are currently
  * the only symbol names that are kept track of.
  */
-static std::map<std::string, llvm::Value *> symbol_table;
+extern std::map<std::string, llvm::Value *> symbol_table;
 
-static inline void initialise_module() {
-    context = std::make_unique<llvm::LLVMContext>();
-    module = std::make_unique<llvm::Module>("My Lang JIT Compiler", *context);
-    builder = std::make_unique<llvm::IRBuilder<>>(*context);
-}
+void initialise_module();
 
 } // namespace IRBuilder
 
