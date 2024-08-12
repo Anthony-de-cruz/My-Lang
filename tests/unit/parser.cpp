@@ -4,6 +4,7 @@
 #include <sstream>
 #include <stdexcept>
 
+#include "ir_generator.h"
 #include "parser.h"
 
 class ParserTest : public testing::Test {
@@ -16,6 +17,7 @@ class ParserTest : public testing::Test {
         lexer = new Lexer;
         stream = new std::stringstream;
         parser = new Parser(lexer, stream);
+        IRGenerator::initialise_module();
     };
 };
 
