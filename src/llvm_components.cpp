@@ -1,6 +1,6 @@
-#include "ir_builder.h"
+#include "llvm_components.h"
 
-namespace IRBuilder {
+namespace LLVMComponents {
 
 std::unique_ptr<llvm::LLVMContext> context;
 std::unique_ptr<llvm::IRBuilder<>> builder;
@@ -16,4 +16,4 @@ void initialise_module() {
     assert(builder);
 }
 
-} // namespace IRBuilder
+} // namespace LLVMComponents

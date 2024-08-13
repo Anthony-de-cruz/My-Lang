@@ -1,5 +1,5 @@
-#ifndef IR_BUILDER_H
-#define IR_BUILDER_H
+#ifndef LLVM_COMPONENTS_H
+#define LLVM_COMPONENTS_H
 
 #include <llvm/IR/BasicBlock.h>
 #include <llvm/IR/DerivedTypes.h>
@@ -13,7 +13,7 @@
 #include <map>
 #include <memory>
 
-namespace IRBuilder {
+namespace LLVMComponents {
 
 /**
  * llvm::LLVMContext provides the core LLVM data structures, including the type
@@ -40,6 +40,6 @@ extern std::map<std::string, llvm::Value *> symbol_table;
 
 void initialise_module();
 
-} // namespace IRBuilder
+} // namespace LLVMComponents
 
-#endif // !IR_BUILDER_H
+#endif // !LLVM_COMPONENTS_H
