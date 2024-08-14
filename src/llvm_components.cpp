@@ -1,6 +1,6 @@
-#include "ir_generator.h"
+#include "llvm_components.h"
 
-namespace IRGenerator {
+namespace LLVMComponents {
 
 std::unique_ptr<llvm::LLVMContext> context;
 std::unique_ptr<llvm::IRBuilder<>> builder;
@@ -16,4 +16,4 @@ void initialise_module() {
     assert(builder);
 }
 
-} // namespace IRGenerator
+} // namespace LLVMComponents
