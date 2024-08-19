@@ -12,7 +12,7 @@
 #include <string>
 #include <vector>
 
-#include "ir_generator.h"
+#include "llvm_components.h"
 
 // Abstract Syntax Tree
 namespace AST {
@@ -38,7 +38,7 @@ class Number : public Expression {
     inline llvm::Value *codegen() override {
         std::cout << "store numeric " << value << '\n';
 
-        return llvm::ConstantFP::get(*IRGenerator::context,
+        return llvm::ConstantFP::get(*LLVMComponents::context,
                                      llvm::APFloat(value));
     };
 };
@@ -54,7 +54,7 @@ class Variable : public Expression {
 
     inline llvm::Value *codegen() override {
         // Look this variable up in the function.
-        llvm::Value *value = IRGenerator::symbol_table[name];
+        llvm::Value *value = LLVMComponents::symbol_table[name];
         if (!value)
             throw std::runtime_error("Use of undeclared symbol: " + name);
         return value;
@@ -80,19 +80,20 @@ class Binary : public Expression {
 
         switch (operation) {
         case '+':
-            return IRGenerator::builder->CreateFAdd(left_gen, right_gen,
-                                                    "addtmp");
+            return LLVMComponents::builder->CreateFAdd(left_gen, right_gen,
+                                                       "addtmp");
         case '-':
-            return IRGenerator::builder->CreateFSub(left_gen, right_gen,
-                                                    "subtmp");
+            return LLVMComponents::builder->CreateFSub(left_gen, right_gen,
+                                                       "subtmp");
         case '*':
-            return IRGenerator::builder->CreateFMul(left_gen, right_gen,
-                                                    "multmp");
+            return LLVMComponents::builder->CreateFMul(left_gen, right_gen,
+                                                       "multmp");
         case '<':
-            left_gen = IRGenerator::builder->CreateFCmpULT(left_gen, right_gen);
+            left_gen =
+                LLVMComponents::builder->CreateFCmpULT(left_gen, right_gen);
             // Convert bool 0/1 from FCmp to double 0.0 or 1.0
-            return IRGenerator::builder->CreateUIToFP(
-                left_gen, llvm::Type::getDoubleTy(*IRGenerator::context),
+            return LLVMComponents::builder->CreateUIToFP(
+                left_gen, llvm::Type::getDoubleTy(*LLVMComponents::context),
                 "booltmp");
 
         default:
@@ -115,7 +116,8 @@ class Call : public Expression {
         : callee(callee), args(std::move(args)) {}
 
     inline llvm::Value *codegen() override {
-        llvm::Function *callee_func = IRGenerator::module->getFunction(callee);
+        llvm::Function *callee_func =
+            LLVMComponents::module->getFunction(callee);
         if (!callee_func)
             throw std::runtime_error("Function: " + callee + " does not exist");
 
@@ -128,7 +130,8 @@ class Call : public Expression {
         for (const auto &arg : args)
             argv.push_back(arg->codegen());
 
-        return IRGenerator::builder->CreateCall(callee_func, argv, "calltmp");
+        return LLVMComponents::builder->CreateCall(callee_func, argv,
+                                                   "calltmp");
     };
 };
 
@@ -149,14 +152,14 @@ class Prototype {
     inline llvm::Function *codegen() {
         // Convert args to a vector of doubles
         std::vector<llvm::Type *> doubles(
-            args.size(), llvm::Type::getDoubleTy(*IRGenerator::context));
+            args.size(), llvm::Type::getDoubleTy(*LLVMComponents::context));
         // Create llvm function
         auto *type = llvm::FunctionType::get(
-            llvm::Type::getDoubleTy(*IRGenerator::context), doubles, false);
+            llvm::Type::getDoubleTy(*LLVMComponents::context), doubles, false);
 
         auto *function =
             llvm::Function::Create(type, llvm::Function::ExternalLinkage, name,
-                                   IRGenerator::module.get());
+                                   LLVMComponents::module.get());
         // Rename the llvm function args to the prototype args
         unsigned index = 0;
         for (auto &arg : function->args())
@@ -180,7 +183,7 @@ class Function {
 
     inline llvm::Function *codegen() {
         auto *function =
-            IRGenerator::module->getFunction(prototype->get_name());
+            LLVMComponents::module->getFunction(prototype->get_name());
 
         if (!function)
             function = prototype->codegen();
@@ -189,19 +192,19 @@ class Function {
             throw std::runtime_error("Function already defined");
 
         // Create basic block and start insertion
-        auto *block =
-            llvm::BasicBlock::Create(*IRGenerator::context, "entry", function);
-        IRGenerator::builder->SetInsertPoint(block);
+        auto *block = llvm::BasicBlock::Create(*LLVMComponents::context,
+                                               "entry", function);
+        LLVMComponents::builder->SetInsertPoint(block);
 
         // Record the arguments in the symbol table
-        IRGenerator::symbol_table.clear();
+        LLVMComponents::symbol_table.clear();
         for (auto &arg : function->args())
-            IRGenerator::symbol_table[std::string(arg.getName())] = &arg;
+            LLVMComponents::symbol_table[std::string(arg.getName())] = &arg;
 
         // Build body
         try {
             llvm::Value *return_value = body->codegen();
-            IRGenerator::builder->CreateRet(return_value);
+            LLVMComponents::builder->CreateRet(return_value);
 
             // Validate the generated code, checking for consistency.
             verifyFunction(*function);
