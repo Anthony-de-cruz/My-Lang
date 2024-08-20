@@ -3,13 +3,13 @@
 #include <stdexcept>
 #include <unistd.h>
 
-#include "ir_builder.h"
 #include "lexer.h"
+#include "llvm_components.h"
 #include "parser.h"
 
 int main() {
 
-    IRBuilder::initialise_module();
+    LLVMComponents::initialise_module();
 
     auto *lexer = new Lexer;
     auto *stream = &std::cin;
@@ -36,7 +36,7 @@ int main() {
     }
 
     // Print the generated code
-    IRBuilder::module->print(llvm::errs(), nullptr);
+    LLVMComponents::module->print(llvm::errs(), nullptr);
 
     return EXIT_SUCCESS;
 }
