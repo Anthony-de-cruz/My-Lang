@@ -48,6 +48,7 @@ add_executable(My-Lang
     example/interactive_parser.cpp
     src/lexer.cpp
     src/parser.cpp
+    src/ast.cpp
     src/llvm_components.cpp
 )
 
